@@ -12,6 +12,8 @@ class ViewController: UIViewController {
     var score = 0
     var timer = Timer()
     var counter = 0
+    var beniArray = [UIImageView]()
+    var hideTimer = Timer()
 
     // views
     @IBOutlet weak var timeLabel: UILabel!
@@ -68,11 +70,16 @@ class ViewController: UIViewController {
         beni8.addGestureRecognizer(recognizer8)
         beni9.addGestureRecognizer(recognizer9)
         
+        beniArray = [beni1, beni2, beni3, beni4, beni5, beni6, beni7, beni8, beni9]
+        
+        hideBeni()
+        
         // timers
         counter = 10
         timeLabel.text = String(counter)
         
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
+        hideTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(hideBeni), userInfo: nil, repeats: true)
     }
 
     // handle incrementing and displaying score
@@ -86,6 +93,11 @@ class ViewController: UIViewController {
         timeLabel.text = String(counter)
         if counter == 0 {
             timer.invalidate()
+            hideTimer.invalidate()
+            
+            for beni in beniArray{
+                beni.isHidden = true
+            }
             
             // alert
             let alert = UIAlertController(title: "Time's UP", message: "Do you want to play again?", preferredStyle: UIAlertController.Style.alert)
@@ -100,6 +112,13 @@ class ViewController: UIViewController {
         }
         
     }
-
+    
+    @objc func hideBeni() {
+        for beni in beniArray {
+            beni.isHidden = true
+        }
+       let random = Int(arc4random_uniform(UInt32(beniArray.count - 1)))
+       beniArray[random].isHidden = false
+    }
 }
 
