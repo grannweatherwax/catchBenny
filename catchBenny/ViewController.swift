@@ -77,8 +77,9 @@ class ViewController: UIViewController {
         // timers
         counter = 10
         timeLabel.text = String(counter)
-        
+        // set the game round timer parameters
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
+        // set the image hide timer parameters
         hideTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(hideBeni), userInfo: nil, repeats: true)
     }
 
@@ -88,36 +89,61 @@ class ViewController: UIViewController {
         scoreLabel.text = "Score: \(score)"
     }
     
+    // handle behavior during game round countdown
     @objc func countdown() {
+        // increment counter var down
         counter -= 1
+        // set timeLabel value to counter value
         timeLabel.text = String(counter)
+        // behavior when counter has reached 0
         if counter == 0 {
+            // remove game round timer
             timer.invalidate()
+            // remove image hiding timer
             hideTimer.invalidate()
             
+            // hide all Benis
             for beni in beniArray{
                 beni.isHidden = true
             }
             
-            // alert
+            // create alert setup
             let alert = UIAlertController(title: "Time's UP", message: "Do you want to play again?", preferredStyle: UIAlertController.Style.alert)
+            // create ok button to end game
             let okButton = UIAlertAction(title: "Nope", style: UIAlertAction.Style.cancel, handler: nil)
+            // create replay button and its functionality
             let replayButton = UIAlertAction(title: "Replay", style: UIAlertAction.Style.default) { UIAlertAction in
-                // replay function
+                // reset round score to 0
+                self.score = 0
+                // set score label text to score value
+                self.scoreLabel.text = "Score: \(self.score)"
+                // set countdown timer counter to 10
+                self.counter = 10
+                // set countdown label to counter value
+                self.timeLabel.text = String(self.counter)
+                // create game round timer again
+                self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.countdown), userInfo: nil, repeats: true)
+                // create image displayer timer again
+                self.hideTimer = Timer.scheduledTimer(timeInterval: 0.7, target: self, selector: #selector(self.hideBeni), userInfo: nil, repeats: true)
             }
+            // add the ok button to the alert
             alert.addAction(okButton)
+            // add the replay button to the alert
             alert.addAction(replayButton)
+            // set the formatted alert to show itself
             self.present(alert, animated: true, completion: nil)
-            
         }
-        
     }
     
+    // handle hiding Beni and then showing one at a time randomly
     @objc func hideBeni() {
+        // hide all Beni images
         for beni in beniArray {
             beni.isHidden = true
         }
+        // choose a random Beni
        let random = Int(arc4random_uniform(UInt32(beniArray.count - 1)))
+        // show the random Beni
        beniArray[random].isHidden = false
     }
 }
