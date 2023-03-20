@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     var counter = 0
     var beniArray = [UIImageView]()
     var hideTimer = Timer()
+    var highScore = 0
 
     // views
     @IBOutlet weak var timeLabel: UILabel!
@@ -36,6 +37,20 @@ class ViewController: UIViewController {
         
         // set initial score
         scoreLabel.text = "Score: \(score)"
+        
+        // high score check
+        // find stored value for high score in user data
+        let storedHighScore = UserDefaults.standard.object(forKey: "highscore")
+        // if there is no stored value, set high score as 0 and display
+        if storedHighScore == nil {
+            highScore = 0
+            highScoreLabel.text = "High Score: \(highScore)"
+        }
+        // if there is a stored high score value, cast it as an integer called newScore and set value to display
+        if let newScore = storedHighScore as? Int {
+            highScore = newScore
+            highScoreLabel.text = "High Score: \(highScore)"
+        }
         
         // enable interaction on beni images
         beni1.isUserInteractionEnabled = true
@@ -70,8 +85,10 @@ class ViewController: UIViewController {
         beni8.addGestureRecognizer(recognizer8)
         beni9.addGestureRecognizer(recognizer9)
         
+        // add all the Benis to the array
         beniArray = [beni1, beni2, beni3, beni4, beni5, beni6, beni7, beni8, beni9]
         
+        // hide all Beni images from view
         hideBeni()
         
         // timers
@@ -105,6 +122,16 @@ class ViewController: UIViewController {
             // hide all Benis
             for beni in beniArray{
                 beni.isHidden = true
+            }
+            
+            // check and set High Score
+            if self.score > self.highScore {
+                // set new high score value
+                self.highScore = self.score
+                // set new high score value to display
+                highScoreLabel.text = "High Score: \(self.highScore)"
+                // store new high score value in user data
+                UserDefaults.standard.set(self.highScore, forKey: "highscore")
             }
             
             // create alert setup
