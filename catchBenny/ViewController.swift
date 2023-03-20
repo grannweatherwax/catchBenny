@@ -8,9 +8,12 @@
 import UIKit
 
 class ViewController: UIViewController {
-    
+    // variables
     var score = 0
+    var timer = Timer()
+    var counter = 0
 
+    // views
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var highScoreLabel: UILabel!
@@ -29,6 +32,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // set initial score
         scoreLabel.text = "Score: \(score)"
         
         // enable interaction on beni images
@@ -63,12 +67,38 @@ class ViewController: UIViewController {
         beni7.addGestureRecognizer(recognizer7)
         beni8.addGestureRecognizer(recognizer8)
         beni9.addGestureRecognizer(recognizer9)
+        
+        // timers
+        counter = 10
+        timeLabel.text = String(counter)
+        
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
     }
 
-    //
+    // handle incrementing and displaying score
     @objc func increaseScore() {
         score += 1
         scoreLabel.text = "Score: \(score)"
+    }
+    
+    @objc func countdown() {
+        counter -= 1
+        timeLabel.text = String(counter)
+        if counter == 0 {
+            timer.invalidate()
+            
+            // alert
+            let alert = UIAlertController(title: "Time's UP", message: "Do you want to play again?", preferredStyle: UIAlertController.Style.alert)
+            let okButton = UIAlertAction(title: "Nope", style: UIAlertAction.Style.cancel, handler: nil)
+            let replayButton = UIAlertAction(title: "Replay", style: UIAlertAction.Style.default) { UIAlertAction in
+                // replay function
+            }
+            alert.addAction(okButton)
+            alert.addAction(replayButton)
+            self.present(alert, animated: true, completion: nil)
+            
+        }
+        
     }
 
 }
